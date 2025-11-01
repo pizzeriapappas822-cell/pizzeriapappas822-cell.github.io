@@ -27,7 +27,7 @@
     <p class="lead">Type the correct three words in order to reveal the hidden code.</p>
 
     <label for="input">Type here</label>
-    <input id="input" type="text" spellcheck="false" inputmode="text" placeholder="Example: square triangle square" autocomplete="off" />
+    <input id="input" type="text" spellcheck="false" inputmode="text" placeholder="Enter your sequence" autocomplete="off" />
 
     <div class="row">
       <button id="check">Check sequence</button>
@@ -56,59 +56,4 @@
     const checkBtn = document.getElementById('check');
     const resetBtn = document.getElementById('reset');
     const message = document.getElementById('message');
-    const secretDiv = document.getElementById('secret');
-    const codeText = document.getElementById('codeText');
-    const copyBtn = document.getElementById('copy');
-
-    function normalize(raw) {
-      if (!raw) return '';
-      let s = raw.trim().toLowerCase();
-      s = s.replace(/[^a-z\s]/g, '');
-      s = s.replace(/\s+/g, ' ');
-      return s;
-    }
-
-    function matchesExactly(raw) {
-      const n = normalize(raw);
-      return ACCEPTED_FORMS.includes(n);
-    }
-
-    checkBtn.addEventListener('click', () => {
-      const val = input.value;
-      if (matchesExactly(val)) {
-        message.textContent = 'Correct — revealing secret!';
-        codeText.innerHTML = `<a href="${SECRET_LINK}" target="_blank">${SECRET_LINK}</a>`;
-        secretDiv.style.display = 'block';
-      } else {
-        message.textContent = 'Incorrect sequence. Try again.';
-        secretDiv.style.display = 'none';
-      }
-    });
-
-    resetBtn.addEventListener('click', () => {
-      input.value = '';
-      message.textContent = '';
-      secretDiv.style.display = 'none';
-    });
-
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(SECRET_LINK);
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => (copyBtn.textContent = 'Copy link'), 1500);
-      } catch (e) {
-        copyBtn.textContent = 'Copy failed';
-      }
-    });
-
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        checkBtn.click();
-      }
-    });
-
-    secretDiv.style.display = 'none';
-  </script>
-</body>
-</html>
+    const secretDiv = doc
