@@ -3,42 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Symbol Secret — Enter the sequence</title>
+  <title>Symbol Secret</title>
   <style>
-    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-    body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f7fafc;margin:0}
-    .card{background:#fff;padding:28px;border-radius:12px;box-shadow:0 6px 22px rgba(15,23,42,0.08);width:400px;max-width:94%}
-    h1{font-size:18px;margin:0 0 8px}
-    p.lead{margin:0 0 16px;color:#475569;font-size:13px}
-    label{display:block;margin-bottom:6px;font-size:13px;color:#0f172a}
-    input[type="text"]{width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px}
-    .example{font-size:12px;color:#64748b;margin-top:6px}
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:#0f0f0f;color:#e5e5e5;}
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+    .card{background:#1a1a1a;padding:28px;border-radius:12px;box-shadow:0 6px 22px rgba(0,0,0,0.7);width:400px;max-width:94%}
+    h1{font-size:18px;margin:0 0 8px;color:#f1f1f1}
+    p.lead{margin:0 0 16px;color:#a3a3a3;font-size:13px}
+    label{display:block;margin-bottom:6px;font-size:13px;color:#ccc}
+    input[type="text"]{width:100%;padding:10px 12px;border:1px solid #333;border-radius:8px;font-size:16px;background:#0f0f0f;color:#f5f5f5}
     .row{display:flex;gap:8px;margin-top:12px}
-    button{padding:10px 12px;border-radius:8px;border:0;background:#0ea5a4;color:white;font-weight:600;cursor:pointer}
-    button.secondary{background:#64748b}
-    #message{margin-top:12px;font-weight:600}
-    #secret{margin-top:12px;padding:12px;border-radius:8px;background:#eef2ff;border:1px dashed #c7d2fe;display:none}
-    small.hint{display:block;margin-top:10px;color:#94a3b8;font-size:12px}
-    .symbols{display:flex;gap:10px;margin-top:12px;justify-content:center}
-    .symbol-btn{width:56px;height:56px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer}
-    .clear{background:#ef4444}
+    button{padding:10px 12px;border-radius:8px;border:0;background:#333;color:#eee;font-weight:600;cursor:pointer;transition:background 0.2s}
+    button:hover{background:#444}
+    button.secondary{background:#555}
+    #message{margin-top:12px;font-weight:600;color:#ccc}
+    #secret{margin-top:12px;padding:12px;border-radius:8px;background:#111;border:1px dashed #333;display:none}
+    small.hint{display:block;margin-top:10px;color:#666;font-size:12px}
   </style>
 </head>
 <body>
   <main class="card">
-    <h1>Enter the secret symbol sequence</h1>
-    <p class="lead">Type the three symbols in order (example: <code>◻▲◻</code>) — only the exact correct sequence will reveal the secret code.</p>
+    <h1>Enter the secret sequence</h1>
+    <p class="lead">Type the correct three words in order to reveal the hidden code.</p>
 
-    <label for="input">Type symbols here</label>
-    <input id="input" type="text" spellcheck="false" inputmode="text" placeholder="e.g. ◻▲◻ or: square triangle square" autocomplete="off" />
-    <div class="example">Examples accepted: <code>◻▲◻</code> or <code>square triangle square</code> (case-insensitive)</div>
-
-    <div class="symbols">
-      <button class="symbol-btn" data-sym="◻" title="Square">◻</button>
-      <button class="symbol-btn" data-sym="▲" title="Triangle">▲</button>
-      <button class="symbol-btn" data-sym="◻" title="Square">◻</button>
-      <button class="symbol-btn clear" id="clearBtn" title="Clear">✕</button>
-    </div>
+    <label for="input">Type here</label>
+    <input id="input" type="text" spellcheck="false" inputmode="text" placeholder="Example: square triangle square" autocomplete="off" />
 
     <div class="row">
       <button id="check">Check sequence</button>
@@ -48,26 +37,19 @@
     <div id="message" aria-live="polite"></div>
 
     <div id="secret" role="status">
-      <!-- The secret code will be injected here when the correct sequence is entered -->
       <div id="codeText"></div>
       <div style="margin-top:8px">
-        <button id="copy">Copy code</button>
+        <button id="copy">Copy link</button>
       </div>
     </div>
 
-    <small class="hint">This is a static client-side page. To change the secret, edit the <code>SECRET_CODE</code> variable in the file.</small>
+    <small class="hint">Static page — edit the SECRET_LINK variable in the file to change your secret link.</small>
   </main>
 
   <script>
-    // ===== CONFIG: edit this to change the revealed secret =====
-    const SECRET_CODE = 'SECRET-1234-OPEN';
-    // ==========================================================
-
-    // canonical form(s) that will be accepted
+    const SECRET_LINK = 'https://docs.google.com/document/d/101OxOpQOr8i2o6ZPM0vFtpPsdVJUc48v4WHsxj79O_c/copy?tab=t.0';
     const ACCEPTED_FORMS = [
-      '◻▲◻',
-      'square triangle square',
-      's t s'
+      'square triangle square'
     ];
 
     const input = document.getElementById('input');
@@ -77,41 +59,28 @@
     const secretDiv = document.getElementById('secret');
     const codeText = document.getElementById('codeText');
     const copyBtn = document.getElementById('copy');
-    const symbolBtns = document.querySelectorAll('.symbol-btn');
-    const clearBtn = document.getElementById('clearBtn');
 
-    // helper: normalize user input so we can compare reliably
     function normalize(raw) {
       if (!raw) return '';
-      // replace similar symbols with canonical ones
       let s = raw.trim().toLowerCase();
-      s = s.replace(/\u25A0|\u25A1|\u25FB|\u25FC|\u2588/g, '◻'); // various square chars -> ◻
-      s = s.replace(/\u25B2|\u25B3|\u25B4/g, '▲'); // triangle-ish -> ▲
-      // replace words and punctuation
-      s = s.replace(/[^\p{L}\p{N}▲◻\s]/gu, ''); // drop punctuation except our symbols
+      s = s.replace(/[^a-z\s]/g, '');
       s = s.replace(/\s+/g, ' ');
       return s;
     }
 
     function matchesExactly(raw) {
       const n = normalize(raw);
-      // exact symbol form
-      if (n === ACCEPTED_FORMS[0]) return true;
-      // words: allow variations like "square triangle square"
-      if (n === ACCEPTED_FORMS[1]) return true;
-      // short form
-      if (n === ACCEPTED_FORMS[2]) return true;
-      return false;
+      return ACCEPTED_FORMS.includes(n);
     }
 
     checkBtn.addEventListener('click', () => {
       const val = input.value;
       if (matchesExactly(val)) {
         message.textContent = 'Correct — revealing secret!';
-        codeText.textContent = SECRET_CODE;
+        codeText.innerHTML = `<a href="${SECRET_LINK}" target="_blank">${SECRET_LINK}</a>`;
         secretDiv.style.display = 'block';
       } else {
-        message.textContent = 'Nope — sequence incorrect. Try again.';
+        message.textContent = 'Incorrect sequence. Try again.';
         secretDiv.style.display = 'none';
       }
     });
@@ -124,33 +93,14 @@
 
     copyBtn.addEventListener('click', async () => {
       try {
-        await navigator.clipboard.writeText(SECRET_CODE);
+        await navigator.clipboard.writeText(SECRET_LINK);
         copyBtn.textContent = 'Copied!';
-        setTimeout(() => (copyBtn.textContent = 'Copy code'), 1500);
+        setTimeout(() => (copyBtn.textContent = 'Copy link'), 1500);
       } catch (e) {
         copyBtn.textContent = 'Copy failed';
       }
     });
 
-    // symbol buttons append their symbol to the input field
-    symbolBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const sym = btn.dataset.sym;
-        if (btn.id === 'clearBtn') {
-          input.value = '';
-          return;
-        }
-        // append without extra spaces if user is using the symbol form
-        input.value = (input.value || '') + sym;
-        input.focus();
-      });
-    });
-
-    clearBtn.addEventListener('click', () => {
-      input.value = '';
-    });
-
-    // allow Enter key to submit
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -158,7 +108,6 @@
       }
     });
 
-    // small defensive: hide secret on load
     secretDiv.style.display = 'none';
   </script>
 </body>
