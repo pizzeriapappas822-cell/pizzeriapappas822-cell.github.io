@@ -24,10 +24,10 @@
 <body>
   <main class="card">
     <h1>Enter the secret sequence</h1>
-    <p class="lead">Type the correct three words in order to reveal the hidden code.</p>
+    <p class="lead">Type the correct sequence to reveal the hidden code.</p>
 
-    <label for="input">Type here</label>
-    <input id="input" type="text" spellcheck="false" inputmode="text" placeholder="Enter your sequence" autocomplete="off" />
+    <label for="input">Enter your sequence</label>
+    <input id="input" type="text" spellcheck="false" inputmode="text" placeholder="Type your sequence" autocomplete="off" />
 
     <div class="row">
       <button id="check">Check sequence</button>
@@ -37,23 +37,51 @@
     <div id="message" aria-live="polite"></div>
 
     <div id="secret" role="status">
-      <div id="codeText"></div>
-      <div style="margin-top:8px">
-        <button id="copy">Copy link</button>
-      </div>
+      <a id="secret-link" href="#" target="_blank" rel="noopener noreferrer">View secret document</a>
     </div>
 
-    <small class="hint">Static page — edit the SECRET_LINK variable in the file to change your secret link.</small>
+    <small class="hint">Static page — edit the SECRET_URL variable in the file to change your link.</small>
   </main>
 
   <script>
-    const SECRET_LINK = 'https://docs.google.com/document/d/101OxOpQOr8i2o6ZPM0vFtpPsdVJUc48v4WHsxj79O_c/copy?tab=t.0';
-    const ACCEPTED_FORMS = [
-      'square triangle square'
-    ];
+    const SECRET_URL = 'https://docs.google.com/document/d/101OxOpQOr8i2o6ZPM0vFtpPsdVJUc48v4WHsxj79O_c/copy?tab=t.0';
+    const SECRET_SEQUENCE = 'square triangle square';
 
     const input = document.getElementById('input');
     const checkBtn = document.getElementById('check');
     const resetBtn = document.getElementById('reset');
     const message = document.getElementById('message');
-    const secretDiv = doc
+    const secretDiv = document.getElementById('secret');
+    const secretLink = document.getElementById('secret-link');
+
+    function normalize(text) {
+      return text.trim().toLowerCase().replace(/\s+/g, ' ');
+    }
+
+    checkBtn.addEventListener('click', () => {
+      const val = normalize(input.value);
+      if (val === SECRET_SEQUENCE) {
+        message.textContent = 'Correct — revealing secret!';
+        secretLink.href = SECRET_URL;
+        secretDiv.style.display = 'block';
+      } else {
+        message.textContent = 'Incorrect sequence. Try again.';
+        secretDiv.style.display = 'none';
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      input.value = '';
+      message.textContent = '';
+      secretDiv.style.display = 'none';
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        checkBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
